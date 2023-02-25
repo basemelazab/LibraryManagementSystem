@@ -1,0 +1,87 @@
+﻿<div class="row">
+    <div class="col-sm-4">
+        @using (Html.BeginForm("Save", "IssueBooks", FormMethod.Post))
+        {
+            <div>
+                <h3>Issue Book</h3>
+            </div>
+            <div class="form-group">
+                <label>Customer Id</label>
+                <input type="text" id="cusId" name="cusId" class="form-control" placeholder="Customer Id" required />
+            </div>
+
+            <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="cusName" name="cusName" class="form-control" placeholder="Customer Name" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Book</label>
+                <select class="form-control" id="book" name="book" required>
+                    <option>Please Select:</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Issue Date</label>
+                <input type="date" name="IssueDate" id="IssueDate" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>Return Date</label>
+                <input type="date" name="ReturnDate" id="ReturnDate" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts{
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+
+    <script>
+        getCustomerId();
+        getBooks();
+
+        function getCustomerId() {
+            $("#cusId").keyup(function (e) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/IssueBooks/GetCustomerId?cusId=' + $("#cusId").val(),
+                    dataType: 'JSON',
+                    success: function (data) {
+                        $("#cusName").val(data);
+                    }
+                });
+            });
+        }
+
+        function getBooks() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/IssueBooks/GetBook',
+                    dataType: 'JSON',
+                    success: function (data) {
+                        console.log(data);
+                        for (var i = 0; i < data.length; i++) {
+                            $("#book").append($("<option/>", {
+                                text: data[i].BookName
+                            }));
+
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert(xhr.responseText)
+                    }
+                });
+        }
+
+    </script>
+
+}
